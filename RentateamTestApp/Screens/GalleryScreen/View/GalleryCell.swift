@@ -10,11 +10,16 @@ import UIKit
 
 class GalleryCell: UICollectionViewCell {
     
-    var viewModel: GalleryCellViewModelProtocol? {
+    var viewModel: GalleryCellViewModel? {
         willSet(viewModel) {
             guard let viewModel = viewModel else { return }
             descriptionPhoto.text = viewModel.imageDescription
-            photoView.set(imageURL: viewModel.image)
+            if let imageData = viewModel.imageData {
+                photoView.image = UIImage(data: imageData)
+            }
+            if let imageUrl = viewModel.imageUrl {
+                photoView.set(imageURL: imageUrl)
+            }
         }
     }
     

@@ -8,7 +8,7 @@
 import UIKit
 
 class GalleryViewController: UIViewController {
-    var viewModel = GalleryViewModel()
+    var viewModel: GalleryViewModel!
     var isRefreshing = true
     
     var collectionView: UICollectionView = {
@@ -18,23 +18,34 @@ class GalleryViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(GalleryCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.alwaysBounceVertical = true
         return collectionView
     }()
     
+    var refresher: UIRefreshControl = UIRefreshControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        configureConstraints()
+        viewModel = GalleryViewModel()
         
+        configureView()
         reloadView()
     }
     
+    @objc private func updateRecords() {
+        if !viewModel.isOfflineMode {
+            viewModel.pageNum = 1
+            viewModel.isPagination = false
+            reloadView()
+        }
+    }
+    
     private func reloadView() {
+        self.refresher.beginRefreshing()
         viewModel.getGalleryPhotos {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
+                self.refresher.endRefreshing()
                 self.isRefreshing = false
             }
         }
@@ -57,9 +68,14 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let destinationVC = viewModel.makeDetailViewController(indexPath: indexPath)
+        navigationController?.pushViewController(destinationVC, animated: true)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.collectionView.contentOffset.y >= (self.collectionView.contentSize.height - self.collectionView.bounds.size.height)) {
-            if !isRefreshing {
+            if !isRefreshing && !viewModel.isOfflineMode {
                 isRefreshing = true
                 reloadView()
             }
@@ -68,11 +84,23 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
 }
 
 extension GalleryViewController {
-    private func configureConstraints() {
+    private func configureView() {
+        
+        title = viewModel.title
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        view.backgroundColor = .white
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
         view.addSubview(collectionView)
         
+        refresher.tintColor = UIColor.red
+        refresher.addTarget(self, action: #selector(updateRecords), for: .valueChanged)
+        collectionView.refreshControl = refresher
+        
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)

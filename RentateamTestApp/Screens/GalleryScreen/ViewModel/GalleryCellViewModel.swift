@@ -8,12 +8,14 @@
 import Foundation
 
 
-class GalleryCellViewModel: GalleryCellViewModelProtocol {
-    var image: String
+class GalleryCellViewModel {
+    var imageData: Data?
+    var imageUrl: String?
     var imageDescription: String
     
-    init(galleryItem: GalleryItem) {
-        image = galleryItem.urls.small
-        imageDescription = galleryItem.description ?? "Net"
+    init?(galleryItem: GalleryItem) {
+        imageData = galleryItem.imageData
+        imageUrl = galleryItem.urls?.small
+        imageDescription = galleryItem.description ?? "No description for photo"
     }
 }
