@@ -41,7 +41,6 @@ class GalleryViewController: UIViewController {
     }
     
     private func reloadView() {
-        self.refresher.beginRefreshing()
         viewModel.getGalleryPhotos {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -97,7 +96,7 @@ extension GalleryViewController {
         
         refresher.tintColor = UIColor.red
         refresher.addTarget(self, action: #selector(updateRecords), for: .valueChanged)
-        collectionView.refreshControl = refresher
+        collectionView.addSubview(refresher)
         
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
