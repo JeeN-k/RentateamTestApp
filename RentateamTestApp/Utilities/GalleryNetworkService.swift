@@ -42,8 +42,4 @@ class GalleryNetworkSerivce: GalleryNetwork {
         guard let data = data, let response = try? decoder.decode(type.self, from: data) else { return nil }
         return response
     }
-    
-    
 }
-
-

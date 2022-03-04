@@ -13,8 +13,7 @@ final class CoreDataManager {
     var network: Networking {
         NetworkService()
     }
-    
-    
+
     lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: "RentateamTestApp")
         container.loadPersistentStores(completionHandler: { (_, error) in
@@ -72,7 +71,6 @@ final class CoreDataManager {
             print(error.localizedDescription)
         }
     }
-    
     
     private func saveItem(galleryItem: GalleryItem, imageData: Data) {
         let photo = Photo(context: moc)

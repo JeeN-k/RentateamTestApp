@@ -77,6 +77,4 @@ class GalleryViewModel {
         }
         self.pageNum += 1
     }
-    
-    
 }

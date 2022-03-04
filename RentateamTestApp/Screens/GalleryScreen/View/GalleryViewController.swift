@@ -84,11 +84,9 @@ extension GalleryViewController: UICollectionViewDataSource, UICollectionViewDel
 
 extension GalleryViewController {
     private func configureView() {
-        
         title = viewModel.title
-        navigationController?.navigationBar.prefersLargeTitles = true
         
-        view.backgroundColor = .white
+        collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
         

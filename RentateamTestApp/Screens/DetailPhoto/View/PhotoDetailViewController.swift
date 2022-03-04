@@ -22,6 +22,7 @@ class PhotoDetailViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 35)
         label.numberOfLines = 0
         label.textAlignment = .center
+        label.textColor = .black
         return label
     }()
     
@@ -52,8 +53,6 @@ class PhotoDetailViewController: UIViewController {
             image.set(imageURL: imageUrl)
         }
     }
-    
-    
 }
 
 extension PhotoDetailViewController {
